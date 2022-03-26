@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const ProjectInfo = () => {
+const ProjectInfo = ({ data }) => {
   return (
     <ProjectInfoWrapper>
-      <ProjectInfomation>00개의 렌더샷</ProjectInfomation>
+      <ProjectInfomation>
+        {data}개의 렌더샷
+      </ProjectInfomation>
       <TopTitle>갤러리</TopTitle>
       <ProjectFilter>
         <Select>모든 렌더샷</Select>

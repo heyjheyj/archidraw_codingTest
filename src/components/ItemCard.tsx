@@ -9,27 +9,30 @@ const ItemCard = ({item, selectItem}: any) => {
     selectItem(item)
   }
 
-  const onShowMenu = () => {
+  const onShowMenu = (e: any) => {
+    e.stopPropagation()
     setIsShowMenu(prev => !prev)
   }
 
   // 클릭이벤트 제어 필요
   // 각 아이템 검포넌트 바깥에서 클릭이벤트가 발생하면 isShowMenu = false로 변경되어야 함
 
-  return <ItemComponent onClick={onSelectItem}>
+  return (
+  <ItemComponent>
     <ItemInner>
-      <Image src={`${item._id}`} alt="gallery"/>
-      <HoverContainer>
-        <CheckBox type="checkbox" />
+      <Image src={`${item._id}`} alt="gallery" />
+      <HoverContainer onClick={onSelectItem}>
+        <CheckBox type="checkbox" onClick={(e) => e.stopPropagation()}/>
         <Menu onClick={onShowMenu}><EllipsisIcon/></Menu>
       </HoverContainer>
-    {isShowMenu && 
-      <MenuContainer>
-        <DownLoad>다운로드</DownLoad>
+      {isShowMenu && 
+        <MenuContainer>
+          <DownLoad>다운로드</DownLoad>
         <Delete>삭제</Delete>
-      </MenuContainer>}
+        </MenuContainer>}
     </ItemInner>
   </ItemComponent>
+  )
 }
 
 export default ItemCard;

@@ -33,7 +33,7 @@ const Gallery = () => {
   <GalleryCompponent>
     <Header closeModal={closeModal}/>
     <GalleryContentWrapper>
-      <ProjectInfo />
+      <ProjectInfo data={data.renderings.length}/>
       <ItemList>
         {data.renderings.map((item: ItemProps, index: number) => <ItemCard item={item} selectItem={selectItem} key={index} />)}
       </ItemList>

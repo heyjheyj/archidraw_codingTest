@@ -7,11 +7,11 @@ const Header = ({closeModal}: any) => {
     closeModal()
   }
 
-  return <TopBar>
+  return (<TopBar>
   <CloseButton onClick={onClose}>
     <CloseIcon />
   </CloseButton>
-</TopBar>
+</TopBar>)
 }
 
 export default Header;
