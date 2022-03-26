@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import EllipsisIcon from '../icons/ellipsis'
 
-const ItemCard = ({item}: any) => {
+const ItemCard = ({item, selectItem}: any) => {
   const [isShowMenu, setIsShowMenu] = useState(false)
+
+  const onSelectItem = () => {
+    selectItem(item)
+  }
 
   const onShowMenu = () => {
     setIsShowMenu(prev => !prev)
@@ -12,7 +16,7 @@ const ItemCard = ({item}: any) => {
   // 클릭이벤트 제어 필요
   // 각 아이템 검포넌트 바깥에서 클릭이벤트가 발생하면 isShowMenu = false로 변경되어야 함
 
-  return <ItemComponent>
+  return <ItemComponent onClick={onSelectItem}>
     <ItemInner>
       <Image src={`${item._id}`} alt="gallery"/>
       <HoverContainer>

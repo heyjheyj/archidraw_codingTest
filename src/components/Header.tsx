@@ -2,9 +2,13 @@ import React from 'react';
 import styled from 'styled-components'
 import CloseIcon from '../icons/close'
 
-const Header = () => {
+const Header = ({closeModal}: any) => {
+  const onClose = () => {
+    closeModal()
+  }
+
   return <TopBar>
-  <CloseButton>
+  <CloseButton onClick={onClose}>
     <CloseIcon />
   </CloseButton>
 </TopBar>
@@ -30,4 +34,5 @@ const CloseButton = styled.button`
   border: none;
   border-radius: 4px;
   padding: 0 10px;
+  cursor: pointer;
 `
