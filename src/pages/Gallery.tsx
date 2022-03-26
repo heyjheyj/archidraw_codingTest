@@ -1,26 +1,45 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components'
 
 import data from '../data/test.json'
 import Header from '../components/Header';
 import ItemCard from '../components/ItemCard';
 import ProjectInfo from '../components/ProjectInfo';
+import Datail from '../components/Detail'
 
 export interface ItemProps {
   _id: string
 }
 
 const Gallery = () => {
-  return (
+  const [isSelecting, setIsSelecting] = useState(false)
+  const [selectedItem, setSelectedItem] = useState({})
+
+  const selectItem = (item: ItemProps) => {
+    setSelectedItem(item)
+    setIsSelecting(true)
+  }
+
+  const closeModal = () => {
+    if (isSelecting === false) {
+      return;
+    } else {
+      setIsSelecting(false);
+    }
+  }
+
+  return (<>
+  {isSelecting ? <Datail closeModal={closeModal} selectedItem={selectedItem}/> :
   <GalleryCompponent>
-    <Header />
+    <Header closeModal={closeModal}/>
     <GalleryContentWrapper>
       <ProjectInfo />
       <ItemList>
-        {data.renderings.map((item: ItemProps, index: number) => <ItemCard item={item} key={index} />)}
+        {data.renderings.map((item: ItemProps, index: number) => <ItemCard item={item} selectItem={selectItem} key={index} />)}
       </ItemList>
     </GalleryContentWrapper>
-  </GalleryCompponent>
+  </GalleryCompponent>}
+  </>
   )
 } 
 
