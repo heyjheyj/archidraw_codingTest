@@ -1,35 +1,65 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import EllipsisIcon from '../icons/ellipsis'
 
+import { checkItem, uncheckItem, showMenu, closeMenu, deleteItem } from '../redux/itemReducer'
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+
 const ItemCard = ({item, selectItem}: any) => {
-  const [isShowMenu, setIsShowMenu] = useState(false)
+  const dispatch = useAppDispatch()
+  const isAllChecked = useAppSelector(state => state.items.isAllChecked)
 
   const onSelectItem = () => {
     selectItem(item)
   }
 
+ const onCheck = (e: any) => {
+  e.stopPropagation()
+  dispatch(checkItem(item))
+  if (isAllChecked || item.checked) {
+    dispatch(uncheckItem(item))
+  }
+ }
+
   const onShowMenu = (e: any) => {
     e.stopPropagation()
-    setIsShowMenu(prev => !prev)
+    dispatch(showMenu(item))
+    if (item.isShowMenu) {
+      dispatch(closeMenu(item))
+    }
   }
 
-  // 클릭이벤트 제어 필요
-  // 각 아이템 검포넌트 바깥에서 클릭이벤트가 발생하면 isShowMenu = false로 변경되어야 함
+  const onDelete = () => {
+    let message = "정말 삭제하시겠습니까?";
+    let result = window.confirm(message);
+    if (result) {
+      dispatch(deleteItem(item))
+    } else {
+      return;
+    }
+  }
 
   return (
   <ItemComponent>
     <Item>
       <ItemInner>
         <Image src={`${item._id}`} alt="gallery" />
+        {item.checked && <Checked type="checkbox" checked readOnly/>}
         <HoverContainer onClick={onSelectItem}>
-          <CheckBox type="checkbox" onClick={(e) => e.stopPropagation()}/>
-          <Menu onClick={onShowMenu}><EllipsisIcon/></Menu>
+          <CheckBox 
+            type="checkbox" 
+            onClick={onCheck} 
+            checked={item.checked} 
+            readOnly 
+          />
+          <Menu onClick={onShowMenu}>
+            <EllipsisIcon/>
+          </Menu>
         </HoverContainer>
-        {isShowMenu && 
+        {item.isShowMenu && 
           <MenuContainer>
             <DownLoad>다운로드</DownLoad>
-          <Delete>삭제</Delete>
+            <Delete onClick={onDelete}>삭제</Delete>
           </MenuContainer>}
       </ItemInner>
     </Item>
@@ -66,6 +96,15 @@ const Image = styled.img`
 	height: auto;
 `
 
+const Checked = styled.input`
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  box-sizing: border-box;
+  font-size: 20px;
+  color: rgb(0,0,0, 0.65);
+`
+
 const HoverContainer = styled.div`
   background-color:rgba(75, 79, 84, 0.7);
   width: 100%;
@@ -84,7 +123,7 @@ const CheckBox = styled.input`
   top: 15px;
   left: 15px;
   box-sizing: border-box;
-  font-size: 14px;
+  font-size: 20px;
   color: rgb(0,0,0, 0.65);
 `
 

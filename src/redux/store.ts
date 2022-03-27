@@ -1,11 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
-import carouselReducer from './carouselReducer'
+import detailReducer from './detailReducer'
 import itemReducer from './itemReducer'
 
 export const store = configureStore({
   reducer: {
     items: itemReducer,
-    carousel: carouselReducer
+    detail: detailReducer
   },
 })
 
