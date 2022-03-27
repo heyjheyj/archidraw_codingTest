@@ -5,13 +5,34 @@ import CloseIcon from '../icons/close'
 import Download from '../icons/download';
 import Trash from '../icons/trash';
 
-const ModalHeader = ({closeModal}: any) => {
-  const onClose = () => {
-    closeModal()
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { deleteItem, showModal } from '../redux/itemReducer';
+import { clearItems } from '../redux/detailReducer';
+
+const ModalHeader = ({selectedItem}: any) => {
+  const isSelecting = useAppSelector(state => state.items.isSelecting)
+  const dispatch = useAppDispatch()
+
+  const closeModal = () => {
+    if (isSelecting === true) {
+      dispatch(showModal())
+      dispatch(clearItems())
+    }
+  }
+
+  const onDelete = () => {
+    let message = "정말 삭제하시겠습니까?";
+    let result = window.confirm(message);
+    if (result) {
+      dispatch(deleteItem(selectedItem))
+      closeModal()
+    } else {
+      return;
+    }
   }
 
   return (<TopBar>
-    <CloseButton onClick={onClose}>
+    <CloseButton onClick={closeModal}>
       <CloseIcon /> 
     </CloseButton>
     <RightMenu>
@@ -22,7 +43,7 @@ const ModalHeader = ({closeModal}: any) => {
         <Download />
         <Text>Download</Text>
       </DownloadButton>
-      <TrashButton>
+      <TrashButton onClick={onDelete}>
         <Trash />
       </TrashButton>
     </RightMenu>

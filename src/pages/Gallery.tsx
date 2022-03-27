@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useCallback} from 'react';
 import styled from 'styled-components'
 
 import Header from '../components/Header';
@@ -7,23 +7,38 @@ import ProjectInfo from '../components/ProjectInfo';
 import Datail from '../components/Detail'
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { manipulate, State } from '../redux/itemReducer';
+import { manipulate, selectItem, State, showModal, closeMenuAll } from '../redux/itemReducer';
 
 const Gallery = () => {
+  const itemBoxRef = useRef<HTMLUListElement>(null);
   const dispatch = useAppDispatch();
-  const data = useAppSelector(state => state.items.items)
+  const data = useAppSelector(state => state.items)
+  const isSelecting = useAppSelector(state => state.items.isSelecting)
 
-  const [isSelecting, setIsSelecting] = useState(false)
-  const [selectedItem, setSelectedItem] = useState({})
-
-  const selectItem = (item: State) => {
-    setSelectedItem(item)
-    setIsSelecting(true)
+  const onSelectItem = (item: State) => {
+    dispatch(showModal())
+    dispatch(selectItem(item))
+    dispatch(closeMenuAll())
   }
 
-  const closeModal = () => {
-    if (isSelecting === true) setIsSelecting(false)
-  }
+  const handleClick = useCallback(
+    e => {
+      if (itemBoxRef.current && !itemBoxRef.current.contains(e.target)) {
+        dispatch(closeMenuAll())
+      }
+    },
+    [dispatch]
+  );
+
+  useEffect(
+    () => {
+      window.addEventListener("mousedown", handleClick);
+      return () => {
+        window.removeEventListener("mousedown", handleClick);
+      };
+    },
+    [handleClick]
+  );
 
   useEffect(() => {
     dispatch(manipulate())
@@ -32,13 +47,18 @@ const Gallery = () => {
   return (
     <>
       {isSelecting ? 
-        <Datail closeModal={closeModal} selectedItem={selectedItem} data={data}/> 
+        <Datail /> 
         : <GalleryCompponent>
             <Header />
             <GalleryContentWrapper>
-              <ProjectInfo data={data.length}/>
-                <ItemList>
-                  {data.map((item: State, index: number) => <ItemCard item={item} selectItem={selectItem} key={index} />)}
+              <ProjectInfo />
+                <ItemList ref={itemBoxRef}>
+                  {data.items.map((item: State, index: number) => 
+                    <ItemCard 
+                      item={item} 
+                      selectItem={onSelectItem} 
+                      key={index} 
+                    />)}
                 </ItemList>
             </GalleryContentWrapper>
           </GalleryCompponent>

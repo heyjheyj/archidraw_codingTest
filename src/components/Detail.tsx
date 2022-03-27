@@ -1,30 +1,54 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components'
 import NextArrow from '../icons/nextArrow';
 import PrevArrow from '../icons/prevArrow';
 import ModalHeader from './ModalHeader';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { getItems, prev, next } from '../redux/carouselReducer';
+import { getItems, prev, next } from '../redux/detailReducer';
+import { State } from '../redux/itemReducer';
 
-const Detail = ({closeModal, selectedItem, data}: any) => {
+const Detail = () => {
+  const [current, setCurrent] = useState<any>()
   const dispatch = useAppDispatch();
-  
+  const data = useAppSelector(state => state.items)
+  const currentIndex = useAppSelector(state => state.detail.currentIndex)
+  const selectedItem = useAppSelector<State>(state => state.items.selectedItem)
+  const isEnd = useAppSelector(state => state.detail.isEnd)
+  const isStart = useAppSelector(state => state.detail.isStart)
+
+  const movePrev = () => {
+    dispatch(prev({selectedItem, currentIndex}))
+  }
+
+  const moveNext = () => {
+    dispatch(next({selectedItem, currentIndex}))
+  }
+
+  const getCurrentItem = () => {
+    let res = data.items.find((i:any) => i.key == currentIndex)
+    setCurrent(res)
+  }
+
+  useEffect(() => {
+    getCurrentItem()
+  })
+
   useEffect(() => {
     dispatch(getItems({data, selectedItem}))
-  },[])
+  },[dispatch, data, selectedItem])
 
   return (
     <Modal>
-    <ModalHeader closeModal={closeModal} />
+    <ModalHeader selectedItem={selectedItem}/>
       <GalleryDetail>
-        <Image src={`${selectedItem._id}`} alt="selectedImage"/>
-      <PrevArrowButton>
+      {current && <Image src={`${current._id}`} alt="selectedImage"/>}
+      {!isStart && <PrevArrowButton onClick={movePrev}>
         <PrevArrow />
-      </PrevArrowButton>
-      <NextArrowButton>
+      </PrevArrowButton>}
+      {!isEnd && <NextArrowButton onClick={moveNext}>
         <NextArrow />
-      </NextArrowButton>
+      </NextArrowButton>}
       </GalleryDetail>
     </Modal>
   )
