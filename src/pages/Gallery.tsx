@@ -1,45 +1,49 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components'
 
-import data from '../data/test.json'
 import Header from '../components/Header';
 import ItemCard from '../components/ItemCard';
 import ProjectInfo from '../components/ProjectInfo';
 import Datail from '../components/Detail'
 
-export interface ItemProps {
-  _id: string
-}
+import { useAppSelector, useAppDispatch } from '../redux/hooks'
+import { manipulate, State } from '../redux/itemReducer';
 
 const Gallery = () => {
+  const dispatch = useAppDispatch();
+  const data = useAppSelector(state => state.items.items)
+
   const [isSelecting, setIsSelecting] = useState(false)
   const [selectedItem, setSelectedItem] = useState({})
 
-  const selectItem = (item: ItemProps) => {
+  const selectItem = (item: State) => {
     setSelectedItem(item)
     setIsSelecting(true)
   }
 
   const closeModal = () => {
-    if (isSelecting === false) {
-      return;
-    } else {
-      setIsSelecting(false);
-    }
+    if (isSelecting === true) setIsSelecting(false)
   }
 
-  return (<>
-  {isSelecting ? <Datail closeModal={closeModal} selectedItem={selectedItem}/> :
-  <GalleryCompponent>
-    <Header closeModal={closeModal}/>
-    <GalleryContentWrapper>
-      <ProjectInfo data={data.renderings.length}/>
-      <ItemList>
-        {data.renderings.map((item: ItemProps, index: number) => <ItemCard item={item} selectItem={selectItem} key={index} />)}
-      </ItemList>
-    </GalleryContentWrapper>
-  </GalleryCompponent>}
-  </>
+  useEffect(() => {
+    dispatch(manipulate())
+  }, [dispatch])
+
+  return (
+    <>
+      {isSelecting ? 
+        <Datail closeModal={closeModal} selectedItem={selectedItem} data={data}/> 
+        : <GalleryCompponent>
+            <Header />
+            <GalleryContentWrapper>
+              <ProjectInfo data={data.length}/>
+                <ItemList>
+                  {data.map((item: State, index: number) => <ItemCard item={item} selectItem={selectItem} key={index} />)}
+                </ItemList>
+            </GalleryContentWrapper>
+          </GalleryCompponent>
+      }
+    </>
   )
 } 
 
