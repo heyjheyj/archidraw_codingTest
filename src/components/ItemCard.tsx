@@ -19,18 +19,20 @@ const ItemCard = ({item, selectItem}: any) => {
 
   return (
   <ItemComponent>
-    <ItemInner>
-      <Image src={`${item._id}`} alt="gallery" />
-      <HoverContainer onClick={onSelectItem}>
-        <CheckBox type="checkbox" onClick={(e) => e.stopPropagation()}/>
-        <Menu onClick={onShowMenu}><EllipsisIcon/></Menu>
-      </HoverContainer>
-      {isShowMenu && 
-        <MenuContainer>
-          <DownLoad>다운로드</DownLoad>
-        <Delete>삭제</Delete>
-        </MenuContainer>}
-    </ItemInner>
+    <Item>
+      <ItemInner>
+        <Image src={`${item._id}`} alt="gallery" />
+        <HoverContainer onClick={onSelectItem}>
+          <CheckBox type="checkbox" onClick={(e) => e.stopPropagation()}/>
+          <Menu onClick={onShowMenu}><EllipsisIcon/></Menu>
+        </HoverContainer>
+        {isShowMenu && 
+          <MenuContainer>
+            <DownLoad>다운로드</DownLoad>
+          <Delete>삭제</Delete>
+          </MenuContainer>}
+      </ItemInner>
+    </Item>
   </ItemComponent>
   )
 }
@@ -41,17 +43,25 @@ const ItemComponent = styled.li`
   flex: 0 1 25%;
   width: 25%;
 `
+
+const Item = styled.div`
+  margin: 9px;
+`
+
 const ItemInner = styled.div`
   background-color: rgb(255, 255, 255);
   cursor: pointer;
-  margin: 9px;
   position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
 `
 
 const Image = styled.img`
-  width: 100%;
+  top:0;
+  width: 130%;
   height: 100%;
-  border-radius: 4px;
+  object-fit: cover;
 	display: block;
 	height: auto;
 `
@@ -114,7 +124,7 @@ width: 100%;
   height: 100%;
   text-align: center;
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #ddd;
   }
 `
 
@@ -124,6 +134,6 @@ const Delete = styled.li`
   height: 100%;
   text-align: center;
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #ddd;
   }
 `

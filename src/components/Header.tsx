@@ -2,16 +2,14 @@ import React from 'react';
 import styled from 'styled-components'
 import CloseIcon from '../icons/close'
 
-const Header = ({closeModal}: any) => {
-  const onClose = () => {
-    closeModal()
-  }
-
-  return (<TopBar>
-  <CloseButton onClick={onClose}>
-    <CloseIcon />
-  </CloseButton>
-</TopBar>)
+const Header = () => {
+  return (
+    <TopBar>
+      <CloseButton>
+        <CloseIcon />
+      </CloseButton>
+    </TopBar>
+  )
 }
 
 export default Header;
@@ -33,6 +31,9 @@ const CloseButton = styled.button`
   align-items: center;
   border: none;
   border-radius: 4px;
-  padding: 0 10px;
+  padding: 0 6px;
   cursor: pointer;
+  &:hover {
+    background: #ddd;
+  }
 `
