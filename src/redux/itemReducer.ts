@@ -119,31 +119,10 @@ export const itemReducer = createSlice({
       })
     },
     deleteAll: (state: any, actions: PayloadAction<Parameter>) => {
-      const item = actions.payload;
-      let newArr:any = []
-      console.log(item)
-      // for (let key in item) {
-      //   console.log(item[key])
-
-        state.items.forEach((i: State) => {
-          for (let key in item) {
-            if(i.key !== item[key]) {
-              newArr.push(i)
-            }
-          }
-        })
-
-        console.log(newArr)
-      state.items = newArr;
-
-      // for (let i = 0; i < state.items.length; i++) {
-      //   Object.values(item).find(key => {
-      //     if (key !== state.items[i].key) {
-      //       newArr.push(state.items[i])
-      //     }
-      //   })
-      // }
-      // state.items = newArr
+      // 비교 타입이 달라서 문제
+      // Object.keys(checkItems).map(Number)
+      const items = Object.values(actions.payload)
+      state.items = state.items.filter((i: State) => !items.includes(i.key))
     },
     downLoadItem: (state, actions: PayloadAction<object>) => {
       console.log('download')

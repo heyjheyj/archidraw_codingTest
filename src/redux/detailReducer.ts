@@ -20,7 +20,7 @@ export const detailReducer = createSlice({
     getItems : (state, actions: PayloadAction<any>) => {
       // initialState - items에 값 셋팅, currentIndex셋팅, end값 셋팅
       const { data, selectedItem } = actions.payload;
-      state.items = data;
+      state.items = data.items;
       state.currentIndex = selectedItem.key;
       state.end = data.items.length;
       state.currentItem = selectedItem
@@ -30,9 +30,15 @@ export const detailReducer = createSlice({
         state.isEnd = true
       }
     },
-    prev: (state, actions: PayloadAction<object>) => {
+    prev: (state, actions: PayloadAction<any>) => {
       // 현재 값 앞으로 이동
       // 제일 앞으로 이동하면 버튼이 사라짐
+      const {selectedItem, currentIndex} = actions.payload
+      console.log(selectedItem, currentIndex)
+
+      // 아이템length
+      // 삭제
+
       if (state.currentIndex < 3) {
         state.currentIndex = 1
         state.isStart = true

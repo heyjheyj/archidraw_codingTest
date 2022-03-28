@@ -24,7 +24,8 @@ const ProjectInfo = () => {
   }
 
   const onDeleteAll = () => {
-    dispatch(deleteAll(Object.keys(checkItems)))
+    dispatch(deleteAll(Object.keys(checkItems).map(Number)))
+    unCheckAll();
   }
 
   return (

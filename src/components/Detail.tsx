@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import styled from 'styled-components'
 import NextArrow from '../icons/nextArrow';
 import PrevArrow from '../icons/prevArrow';
@@ -10,6 +10,7 @@ import { State } from '../redux/itemReducer';
 
 const Detail = () => {
   const [current, setCurrent] = useState<any>()
+  const imageRef = useRef<HTMLImageElement>(null)
   const dispatch = useAppDispatch();
   const data = useAppSelector(state => state.items)
   const currentIndex = useAppSelector(state => state.detail.currentIndex)
@@ -26,7 +27,7 @@ const Detail = () => {
   }
 
   const getCurrentItem = () => {
-    let res = data.items.find((i:any) => i.key == currentIndex)
+    let res = data.items.find((i:any) => i.key === currentIndex)
     setCurrent(res)
   }
 
@@ -40,9 +41,9 @@ const Detail = () => {
 
   return (
     <Modal>
-    <ModalHeader selectedItem={selectedItem}/>
+    <ModalHeader selectedItem={selectedItem} current={current} imageRef={imageRef}/>
       <GalleryDetail>
-      {current && <Image src={`${current._id}`} alt="selectedImage"/>}
+      {current && <Image ref={imageRef} src={`${current._id}`} alt="selectedImage"/>}
       {!isStart && <PrevArrowButton onClick={movePrev}>
         <PrevArrow />
       </PrevArrowButton>}
