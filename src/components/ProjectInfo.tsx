@@ -19,6 +19,10 @@ const ProjectInfo = () => {
     }
   }
 
+  const unCheckAll = () => {
+    dispatch(uncheckedAll())
+  }
+
   const onDeleteAll = () => {
     dispatch(deleteAll(Object.keys(checkItems)))
   }
@@ -48,7 +52,7 @@ const ProjectInfo = () => {
           <TrashButton onClick={onDeleteAll}>
             <Trash />
           </TrashButton>
-          <Text>Deselect</Text>
+          <Text onClick={unCheckAll}>Deselect</Text>
         </RightMenu> :
           <ProjectFilter>
             <Select>모든 렌더샷</Select>
@@ -160,6 +164,7 @@ const Text = styled.span`
   align-items: center;
   cursor: pointer;
   margin-left: 5px;
+  border-radius: 4px;
 `
 
 const TrashButton = styled.button`
