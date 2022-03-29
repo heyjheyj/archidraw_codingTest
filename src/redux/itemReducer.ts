@@ -160,8 +160,12 @@ export const itemReducer = createSlice({
     downloadAll: (state: IItemState, actions: PayloadAction<object>) => {
       const selectedItem = Object.values(actions.payload)
       state.downLoadingTargetItems = state.items.filter((i: IItem) => selectedItem.includes(i.key))
-      let urls = state.downLoadingTargetItems.map((i: IItem) => {return i._id})
-      exportZip(urls)
+      if(state.downLoadingTargetItems.length === 1) {
+        saveAs(state.downLoadingTargetItems[0]._id, `image${state.downLoadingTargetItems[0].key + 1}.png`)
+      } else {
+        let urls = state.downLoadingTargetItems.map((i: IItem) => {return i._id})
+        exportZip(urls)
+      }
     }
   },
 })
