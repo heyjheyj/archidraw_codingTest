@@ -50,11 +50,11 @@ function urlToPromise(url: string) {
 const exportZip = (urls: any) => {
   const zip = JsZip();
   urls.forEach(function(url:string, index:number){
-    var filename = "element" + index + ".png";
+    var filename = "galleryImage" + index + ".png";
     zip.file(filename, urlToPromise(url), {binary:true});
   });
   zip.generateAsync({type:'blob'}).then(function(content) {
-    const fileName = `combined-images.zip`;
+    const fileName = `images.zip`;
     saveAs(content, fileName);
   });
 }
