@@ -32,7 +32,6 @@ const ItemCard = ({item, selectItem, index}: IProps) => {
 
   const onCheck = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation()
-
     dispatch(checkItem(item))
     if (isAllChecked || item.checked) {
       dispatch(uncheckItem(item))
