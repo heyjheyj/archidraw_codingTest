@@ -12,9 +12,6 @@ const ProjectInfo = () => {
   const checkItems = useAppSelector(state => state.items.checkedItems)
   const isAllChecked = useAppSelector(state => state.items.isAllChecked)
 
-  const downloadItems = useAppSelector(state => state.items.downLoadItem)
-  console.log(downloadItems)
-  
   const checkAllItems = () => {
     dispatch(checkAll())
     if (isAllChecked) {
@@ -63,8 +60,19 @@ const ProjectInfo = () => {
           <Text onClick={unCheckAll}>Deselect</Text>
         </RightMenu> :
           <ProjectFilter>
-            <Select>모든 렌더샷</Select>
-            <Select>모든 화질</Select>
+            <Select>
+                <option>All Renderings</option>
+                <option>First Person</option>
+                <option>Top View</option>
+                <option>Panorama</option>
+            </Select>
+            <Select>           
+                <option>All Resolutions</option>
+                <option>Standard</option>
+                <option>2K</option>
+                <option>3K</option>
+                <option>4K</option>
+            </Select>
           </ProjectFilter>
       }
     </ProjectInfoWrapper>
@@ -127,11 +135,11 @@ const ProjectFilter = styled.span`
   justify-content: flex-end;
 `;
 
-const Select = styled.div`
+const Select = styled.select`
   text-align: end;
   margin-left: 8px;
   box-sizing: border-box;
-  margin: 0;
+  margin: 0 2px;
   padding: 0 4px;
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;

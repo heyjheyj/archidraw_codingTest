@@ -155,9 +155,7 @@ export const itemReducer = createSlice({
       const selectedItem = Object.values(actions.payload)
       state.downLoadItem = state.items.filter((i: State) => selectedItem.includes(i.key))
       let urls = state.downLoadItem.map((i: State) => {return i._id})
-      console.log(urls)
-      let res = exportZip(urls)
-      console.log(res)
+      exportZip(urls)
     }
   },
 })

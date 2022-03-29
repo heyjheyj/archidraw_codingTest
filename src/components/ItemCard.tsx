@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import EllipsisIcon from '../icons/ellipsis'
 
-import { checkItem, uncheckItem, showMenu, closeMenu, deleteItem } from '../redux/itemReducer'
+import { checkItem, uncheckItem, showMenu, closeMenu, deleteItem, downLoadItem, closeMenuAll } from '../redux/itemReducer'
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
-const ItemCard = ({item, selectItem}: any) => {
+const ItemCard = ({item, selectItem}:any) => {
+  const imageRef = useRef<any>(null)
   const dispatch = useAppDispatch()
   const isAllChecked = useAppSelector(state => state.items.isAllChecked)
 
@@ -13,13 +14,22 @@ const ItemCard = ({item, selectItem}: any) => {
     selectItem(item)
   }
 
- const onCheck = (e: any) => {
-  e.stopPropagation()
-  dispatch(checkItem(item))
-  if (isAllChecked || item.checked) {
-    dispatch(uncheckItem(item))
+  const downloadFile = () => {
+    let file = imageRef.current.currentSrc
+    dispatch(downLoadItem(file))
+    if (item.isShowMenu) {
+      dispatch(closeMenu(item))
+    }
+  };
+
+  const onCheck = (e: any) => {
+    e.stopPropagation()
+    dispatch(checkItem(item))
+    if (isAllChecked || item.checked) {
+      dispatch(uncheckItem(item))
+    }
+    dispatch(closeMenuAll())
   }
- }
 
   const onShowMenu = (e: any) => {
     e.stopPropagation()
@@ -43,8 +53,10 @@ const ItemCard = ({item, selectItem}: any) => {
   <ItemComponent>
     <Item>
       <ItemInner>
-        <Image src={`${item._id}`} alt="gallery" />
-        {item.checked && <Checked type="checkbox" checked readOnly/>}
+        <Image ref={imageRef} src={`${item._id}`} alt="gallery" />
+        {item.checked && 
+          <Checked type="checkbox" checked readOnly/>
+        }
         <HoverContainer onClick={onSelectItem}>
           <CheckBox 
             type="checkbox" 
@@ -58,7 +70,7 @@ const ItemCard = ({item, selectItem}: any) => {
         </HoverContainer>
         {item.isShowMenu && 
           <MenuContainer>
-            <DownLoad>다운로드</DownLoad>
+            <DownLoad onClick={downloadFile}>다운로드</DownLoad>
             <Delete onClick={onDelete}>삭제</Delete>
           </MenuContainer>}
       </ItemInner>
@@ -102,7 +114,7 @@ const Checked = styled.input`
   left: 15px;
   box-sizing: border-box;
   font-size: 20px;
-  color: rgb(0,0,0, 0.65);
+  color: rgb(255,0,0, 0.2);
 `
 
 const HoverContainer = styled.div`
