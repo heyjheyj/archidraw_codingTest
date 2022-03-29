@@ -18,7 +18,6 @@ const Detail = () => {
   const isEnd = useAppSelector(state => state.detail.isEnd)
   const isStart = useAppSelector(state => state.detail.isStart)
 
-
   const movePrev = () => {
     dispatch(prev())
   }
@@ -28,12 +27,13 @@ const Detail = () => {
   }
 
   useEffect(() => {
+    console.log('initItems')
     dispatch(initItems({items, selectedItem}))
   },[dispatch, items, selectedItem])
 
   return (
     <Modal>
-    <ModalHeader selectedItem={selectedItem} imageRef={imageRef}/>
+    <ModalHeader selectedItem={items[currentIndex]} imageRef={imageRef}/>
       <GalleryDetail>
       {items[currentIndex] && <Image ref={imageRef} src={`${items[currentIndex]._id}`} alt="selectedImage"/>}
       {!isStart && <PrevArrowButton onClick={movePrev}>
