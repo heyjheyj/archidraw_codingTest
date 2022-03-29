@@ -5,11 +5,8 @@ import CloseIcon from '../icons/close'
 import Download from '../icons/download';
 import Trash from '../icons/trash';
 
-import domtoimage from "dom-to-image";
-import { saveAs } from 'file-saver'
-
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { deleteItem, showModal } from '../redux/itemReducer';
+import { deleteItem, downLoadItem, showModal } from '../redux/itemReducer';
 import { clearItems } from '../redux/detailReducer';
 
 const ModalHeader = ({selectedItem, current, imageRef}: any, ) => {
@@ -17,12 +14,8 @@ const ModalHeader = ({selectedItem, current, imageRef}: any, ) => {
   const dispatch = useAppDispatch()
 
   const downloadFile = () => {
-    // let node = imageRef.current
-    // domtoimage
-    //   .toBlob(node)
-    //   .then((blob) => {
-    //     saveAs(blob, 'image.png');
-    //   });
+    let file = imageRef.current.currentSrc
+    dispatch(downLoadItem(file))
   };
 
   const closeModal = () => {

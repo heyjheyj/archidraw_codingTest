@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './store'
 
-import { State } from './itemReducer'
-
 const initialState = {
   items: [],
   currentIndex: 1,
