@@ -2,27 +2,35 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import EllipsisIcon from '../icons/ellipsis'
 
-import { checkItem, uncheckItem, showMenu, closeMenu, deleteItem, downLoadItem, closeMenuAll } from '../redux/itemReducer'
+import { IItem, checkItem, uncheckItem, showMenu, closeMenu, deleteItem, downLoadItem, closeMenuAll } from '../redux/itemReducer'
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
-const ItemCard = ({item, selectItem}:any) => {
-  const imageRef = useRef<any>(null)
+interface IProps {
+  item: IItem,
+  selectItem: (index: number) => void,
+  index: number,
+}
+
+
+const ItemCard = ({item, selectItem, index}: IProps) => {
+  const imageRef = useRef<HTMLImageElement>(null);
   const dispatch = useAppDispatch()
   const isAllChecked = useAppSelector(state => state.items.isAllChecked)
 
   const onSelectItem = () => {
-    selectItem(item)
+    selectItem(index)
   }
 
   const downloadFile = () => {
-    let file = imageRef.current.currentSrc
-    dispatch(downLoadItem(file))
+    const file = imageRef.current?.currentSrc
+    file && dispatch(downLoadItem(file))
+
     if (item.isShowMenu) {
       dispatch(closeMenu(item))
     }
   };
 
-  const onCheck = (e: any) => {
+  const onCheck = (e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation()
     dispatch(checkItem(item))
     if (isAllChecked || item.checked) {
@@ -31,8 +39,9 @@ const ItemCard = ({item, selectItem}:any) => {
     dispatch(closeMenuAll())
   }
 
-  const onShowMenu = (e: any) => {
+  const onShowMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
+
     dispatch(showMenu(item))
     if (item.isShowMenu) {
       dispatch(closeMenu(item))

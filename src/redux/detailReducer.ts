@@ -1,10 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './store'
+import { IItem } from './itemReducer';
 
-const initialState = {
+interface IDetailState {
+  items: IItem[];
+  currentIndex: number,
+  currentItem: IItem,
+  start: number,
+  end: number,
+  isEnd: boolean,
+  isStart: boolean
+}
+
+interface IInitItem {
+  items: IItem[];
+  selectedItem: IItem;
+}
+
+const initialState: IDetailState = {
   items: [],
   currentIndex: 1,
-  currentItem: {},
+  currentItem: { _id: '', key: 0, checked: false, isShowMenu: false },
   start: 1,
   end: 0,
   isEnd: false,
@@ -15,51 +31,40 @@ export const detailReducer = createSlice({
   name: 'items',
   initialState,
   reducers: {
-    getItems : (state, actions: PayloadAction<any>) => {
-      // initialState - items에 값 셋팅, currentIndex셋팅, end값 셋팅
-      const { data, selectedItem } = actions.payload;
-      state.items = data.items;
-      state.currentIndex = selectedItem.key;
-      state.end = data.items.length;
-      state.currentItem = selectedItem
-      if(selectedItem.key === 1) {
-        state.isStart = true
-      } else if (selectedItem.key === data.items.length) {
-        state.isEnd = true
-      }
-    },
-    prev: (state, actions: PayloadAction<any>) => {
-      // 현재 값 앞으로 이동
-      // 제일 앞으로 이동하면 버튼이 사라짐
-      const {selectedItem, currentIndex} = actions.payload
-      console.log(selectedItem, currentIndex)
-      // 아이템length
-      // 삭제
+    initItems : (state: IDetailState, actions: PayloadAction<IInitItem>) => {
+      const { items, selectedItem } = actions.payload;
+      state.items = items;
+      state.currentIndex = items.findIndex((item: IItem) => item.key === selectedItem.key)
+      console.log('currentIndex:', state.currentIndex);
+      console.log('selectedItem.key:', selectedItem.key);
 
-      if (state.currentIndex < 3) {
-        state.currentIndex = 1
+
+      state.end = items.length;
+      state.currentItem = selectedItem
+      if(state.currentIndex === 0) {
         state.isStart = true
-        state.isEnd = false
-      } else {
-        state.isStart = false
-        state.isEnd = false
-        state.currentIndex -= 1
-      }
-    },
-    next: (state, actions: PayloadAction<object>) => {
-      // 다음 값으로 이동
-      // 제일 마지막으로 이동하면 버튼이 사라짐
-      if (state.currentIndex > state.end - 2) {
-        state.currentIndex = state.end
+      } else if (state.currentIndex === items.length-1) {
         state.isEnd = true
-        state.isStart = false
-      } else {
-        state.currentIndex += 1
-        state.isEnd = false
-        state.isStart = false
       }
     },
-    clearItems: (state) => {
+    prev: (state: IDetailState) => {
+      if (state.currentIndex === 1) {
+        state.isStart = true
+      } else if (state.isEnd) {
+        state.isEnd = false
+      }
+      state.currentIndex -= 1
+    },
+    next: (state: IDetailState) => {
+      if (state.isStart) {
+        state.isStart = false;
+      } else if (state.currentIndex === state.items.length-2) {
+        state.isEnd = true;
+      }
+
+      state.currentIndex += 1
+    },
+    clearItems: (state: IDetailState) => {
       state.items = []
       state.currentIndex = 1
       state.end = 0
@@ -70,7 +75,7 @@ export const detailReducer = createSlice({
   },
 })
 
-export const { getItems, prev, next, clearItems } = detailReducer.actions
+export const { initItems, prev, next, clearItems } = detailReducer.actions
 
 export const selected = (state: RootState) => state
 

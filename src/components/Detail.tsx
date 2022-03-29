@@ -1,50 +1,41 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components'
 import NextArrow from '../icons/nextArrow';
 import PrevArrow from '../icons/prevArrow';
 import ModalHeader from './ModalHeader';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { getItems, prev, next } from '../redux/detailReducer';
-import { State } from '../redux/itemReducer';
+import { initItems, prev, next } from '../redux/detailReducer';
+import { IItem } from '../redux/itemReducer';
 
 const Detail = () => {
-  const [current, setCurrent] = useState<any>()
   const imageRef = useRef<HTMLImageElement>(null)
   const dispatch = useAppDispatch();
   
-  const data = useAppSelector(state => state.items)
+  const items = useAppSelector(state => state.items.items)
   const currentIndex = useAppSelector(state => state.detail.currentIndex)
-  const selectedItem = useAppSelector<State>(state => state.items.selectedItem)
+  const selectedItem = useAppSelector<IItem>(state => state.items.selectedItem)
   const isEnd = useAppSelector(state => state.detail.isEnd)
   const isStart = useAppSelector(state => state.detail.isStart)
 
   const movePrev = () => {
-    dispatch(prev({selectedItem, currentIndex}))
+    dispatch(prev())
   }
 
   const moveNext = () => {
-    dispatch(next({selectedItem, currentIndex}))
-  }
-
-  const getCurrentItem = () => {
-    let res = data.items.find((i:any) => i.key === currentIndex)
-    setCurrent(res)
+    dispatch(next())
   }
 
   useEffect(() => {
-    getCurrentItem()
-  })
-
-  useEffect(() => {
-    dispatch(getItems({data, selectedItem}))
-  },[dispatch, data, selectedItem])
+    console.log('initItems')
+    dispatch(initItems({items, selectedItem}))
+  },[dispatch, items, selectedItem])
 
   return (
     <Modal>
-    <ModalHeader selectedItem={selectedItem} current={current} imageRef={imageRef}/>
+    <ModalHeader selectedItem={items[currentIndex]} imageRef={imageRef}/>
       <GalleryDetail>
-      {current && <Image ref={imageRef} src={`${current._id}`} alt="selectedImage"/>}
+      {items[currentIndex] && <Image ref={imageRef} src={`${items[currentIndex]._id}`} alt="selectedImage"/>}
       {!isStart && <PrevArrowButton onClick={movePrev}>
         <PrevArrow />
       </PrevArrowButton>}

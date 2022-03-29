@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components'
 import Bookmark from '../icons/bookmark';
 import CloseIcon from '../icons/close'
@@ -6,20 +5,25 @@ import Download from '../icons/download';
 import Trash from '../icons/trash';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { deleteItem, downLoadItem, showModal } from '../redux/itemReducer';
+import { IItem, deleteItem, downLoadItem, showModal } from '../redux/itemReducer';
 import { clearItems } from '../redux/detailReducer';
 
-const ModalHeader = ({selectedItem, current, imageRef}: any, ) => {
+interface IProp {
+  selectedItem: IItem;
+  imageRef: any;
+}
+
+const ModalHeader = ({selectedItem, imageRef}: IProp) => {
   const isSelecting = useAppSelector(state => state.items.isSelecting)
   const dispatch = useAppDispatch()
 
   const downloadFile = () => {
     let file = imageRef.current.currentSrc
-    dispatch(downLoadItem(file))
+    file && dispatch(downLoadItem(file))
   };
 
   const closeModal = () => {
-    if (isSelecting === true) {
+    if (isSelecting) {
       dispatch(showModal())
       dispatch(clearItems())
     }
@@ -35,6 +39,8 @@ const ModalHeader = ({selectedItem, current, imageRef}: any, ) => {
       return;
     }
   }
+
+  console.log('ModalHeader selectedItem:', selectedItem)
 
   return (<TopBar>
     <CloseButton onClick={closeModal}>

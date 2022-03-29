@@ -7,27 +7,36 @@ import JSZipUtils from '../service/jsziputils';
 
 import test from '../data/test.json'
 
-export interface State {
+export interface IItem {
   _id: string,
   key: number,
   checked: boolean,
   isShowMenu: boolean
 }
 
-const initialState = {
+interface IItemState {
+  items: IItem[];
+  isSelecting: boolean;
+  selectedItem: IItem;
+  checkedItems: {[key: number]: boolean};
+  isAllChecked: boolean;
+  downLoadingTargetItems: IItem[];
+}
+
+const initialState: IItemState = {
   items: [],
   isSelecting: false,
   selectedItem: { _id: '', key: 0, checked: false, isShowMenu: false },
   checkedItems: {},
   isAllChecked: false,
-  downLoadItem: [],
+  downLoadingTargetItems: [],
 }
 
 const manipulateData = () => {
-  let result = test.renderings.map((item: any, index:number) => {
-    return item = {
+  let result = test.renderings.map((item: any, index: number) => {
+    return {
       "_id" : item["_id"],
-      "key" : index + 1,
+      "key" : index,
       "checked": false,
       "isShowMenu": false
     }
@@ -47,7 +56,7 @@ function urlToPromise(url: string) {
   });
 }
 
-const exportZip = (urls: any) => {
+const exportZip = (urls: string[]) => {
   const zip = JsZip();
   urls.forEach(function(url:string, index:number){
     var filename = "galleryImage" + index + ".png";
@@ -63,19 +72,19 @@ export const itemReducer = createSlice({
   name: 'items',
   initialState,
   reducers: {
-    manipulate: (state: any) => {
+    manipulate: (state: IItemState) => {
       let result = manipulateData()
       state.items = result;
     },
-    showModal: (state) => {
+    showModal: (state: IItemState) => {
       state.isSelecting = !state.isSelecting
     },
-    selectItem: (state: any, actions: PayloadAction<State>)=> {
-      state.selectedItem = actions.payload
+    selectItem: (state: IItemState, actions: PayloadAction<number>)=> {
+      state.selectedItem = state.items[actions.payload]
     },
-    checkItem: (state: any, actions: PayloadAction<State>) => {
+    checkItem: (state: IItemState, actions: PayloadAction<IItem>) => {
       const item = actions.payload
-      state.items = state.items.map((i: State) => {
+      state.items = state.items.map((i: IItem) => {
         if (i.key === item.key) {
           i.checked = true
         }
@@ -83,9 +92,9 @@ export const itemReducer = createSlice({
       })
       state.checkedItems[item.key] = true;
     },
-    uncheckItem: (state: any, actions: PayloadAction<State>) => {
+    uncheckItem: (state: IItemState, actions: PayloadAction<IItem>) => {
       const item = actions.payload;
-      state.items = state.items.map((i: State) => {
+      state.items = state.items.map((i: IItem) => {
         if(i.key === item.key) {
           i.checked = false
         }
@@ -93,68 +102,65 @@ export const itemReducer = createSlice({
       })
       delete state.checkedItems[item.key]
     },
-    checkAll: (state: any) => {
+    checkAll: (state: IItemState) => {
       state.isAllChecked = true;
-      state.items = state.items.map((i: State) => {
-        i.checked = true
-        return {...i}
+      state.items = state.items.map((i: IItem) => {
+        i.checked = true;
+        return {...i};
       })
-      state.items.forEach((item: State) => {
+      state.items.forEach((item: IItem) => {
         state.checkedItems[item.key] = true
       })
     },
-    uncheckedAll: (state: any) => {
+    uncheckedAll: (state: IItemState) => {
       state.isAllChecked = false
       state.checkedItems = {}
-      state.items = state.items.map((i: State) => {
+      state.items = state.items.map((i: IItem) => {
         i.checked = false
         return {...i}
       })
     },
-    showMenu: (state: any, actions: PayloadAction<State>) => {
+    showMenu: (state: IItemState, actions: PayloadAction<IItem>) => {
       const item = actions.payload;
-      state.items.map((i: State) => {
-        if (item.key === i.key){
-          i.isShowMenu = true
-        } else if (item.key !== i.key) {
-          i.isShowMenu = false
+      state.items.forEach((i: IItem) => {
+        if (item.key === i.key) {
+          i.isShowMenu = true;
+        } else {
+          i.isShowMenu = false;
         }
-        return i
       })
     },
-    closeMenu: (state: any, actions: PayloadAction<State>) => {
+    closeMenu: (state: IItemState, actions: PayloadAction<IItem>) => {
       const item = actions.payload;
-      state.items.map((i: State) => {
-        if (item.key === i.key){
-          i.isShowMenu = false
+      state.items.forEach((i: IItem) => {
+        if (item.key === i.key) {
+          i.isShowMenu = false;
         }
-        return i
       })
     },
-    closeMenuAll: (state: any) => {
-      state.items.map((i: State) => {
+    closeMenuAll: (state: IItemState) => {
+      state.items.forEach((i: IItem) => {
         i.isShowMenu = false
-        return i
       })
     },
-    deleteItem: (state: any, actions: PayloadAction<State>) => {
+    deleteItem: (state: IItemState, actions: PayloadAction<IItem>) => {
       const item = actions.payload;
-      state.items = state.items.filter((i: State) => {
+      state.items = state.items.filter((i: IItem) => {
         return i.key !== item.key
       })
     },
-    deleteAll: (state: any, actions: PayloadAction<object>) => {
+    deleteAll: (state: IItemState, actions: PayloadAction<object>) => {
       const items = Object.values(actions.payload)
-      state.items = state.items.filter((i: State) => !items.includes(i.key))
+      state.items = state.items.filter((i: IItem) => !items.includes(i.key))
     },
-    downLoadItem: (state, actions: PayloadAction<string>) => {
+    downLoadItem: (state: IItemState, actions: PayloadAction<string>) => {
       const url = actions.payload;
       saveAs(url, 'image.png')
     },
-    downloadAll: (state: any, actions: PayloadAction<object>) => {
+    downloadAll: (state: IItemState, actions: PayloadAction<object>) => {
       const selectedItem = Object.values(actions.payload)
-      state.downLoadItem = state.items.filter((i: State) => selectedItem.includes(i.key))
-      let urls = state.downLoadItem.map((i: State) => {return i._id})
+      state.downLoadingTargetItems = state.items.filter((i: IItem) => selectedItem.includes(i.key))
+      let urls = state.downLoadingTargetItems.map((i: IItem) => {return i._id})
       exportZip(urls)
     }
   },

@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import Download from '../icons/download';
 import Trash from '../icons/trash';
@@ -28,8 +27,14 @@ const ProjectInfo = () => {
   }
 
   const onDeleteAll = () => {
-    dispatch(deleteAll(Object.keys(checkItems).map(Number)))
-    unCheckAll();
+    let message = "정말 삭제하시겠습니까?";
+    let result = window.confirm(message);
+    if (result) {
+      dispatch(deleteAll(Object.keys(checkItems).map(Number)))
+      unCheckAll();
+    } else {
+      return;
+    }
   }
 
   return (
@@ -57,17 +62,17 @@ const ProjectInfo = () => {
           <TrashButton onClick={onDeleteAll}>
             <Trash />
           </TrashButton>
-          <Text onClick={unCheckAll}>Deselect</Text>
+          <Text onClick={unCheckAll}>선택해제</Text>
         </RightMenu> :
           <ProjectFilter>
             <Select>
-                <option>All Renderings</option>
-                <option>First Person</option>
-                <option>Top View</option>
-                <option>Panorama</option>
+                <option>모든 렌더샷</option>
+                <option>일인칭 뷰어</option>
+                <option>탑 뷰</option>
+                <option>파노라마</option>
             </Select>
             <Select>           
-                <option>All Resolutions</option>
+                <option>모든 화질</option>
                 <option>Standard</option>
                 <option>2K</option>
                 <option>3K</option>
@@ -133,6 +138,9 @@ const ProjectFilter = styled.span`
   flex: 1 1 0%;
   display: flex;
   justify-content: flex-end;
+  select {
+    border: 1px solid #ddd;
+  }
 `;
 
 const Select = styled.select`

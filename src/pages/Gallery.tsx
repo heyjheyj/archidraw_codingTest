@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useCallback} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
 import styled from 'styled-components'
 
 import Header from '../components/Header';
@@ -7,7 +7,7 @@ import ProjectInfo from '../components/ProjectInfo';
 import Datail from '../components/Detail'
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { manipulate, selectItem, State, showModal, closeMenuAll } from '../redux/itemReducer';
+import { manipulate, selectItem, IItem, showModal, closeMenuAll} from '../redux/itemReducer';
 
 const Gallery = () => {
   const itemBoxRef = useRef<HTMLUListElement>(null);
@@ -15,15 +15,15 @@ const Gallery = () => {
   const data = useAppSelector(state => state.items)
   const isSelecting = useAppSelector(state => state.items.isSelecting)
 
-  const onSelectItem = (item: State) => {
+  const onSelectItem = (index: number) => {
     dispatch(showModal())
-    dispatch(selectItem(item))
+    dispatch(selectItem(index))
     dispatch(closeMenuAll())
   }
 
   const handleClick = useCallback(
-    e => {
-      if (itemBoxRef.current && !itemBoxRef.current.contains(e.target)) {
+    (e) => {
+      if (itemBoxRef.current && e.target && !itemBoxRef.current.contains(e.target)) {
         dispatch(closeMenuAll())
       }
     },
@@ -53,10 +53,11 @@ const Gallery = () => {
             <GalleryContentWrapper>
               <ProjectInfo />
                 <ItemList ref={itemBoxRef}>
-                  {data.items.map((item: State, index: number) => 
+                  {data.items.map((item: IItem, index: number) => 
                     <ItemCard 
                       item={item} 
-                      selectItem={onSelectItem} 
+                      selectItem={onSelectItem}
+                      index={index}
                       key={index} 
                     />)}
                 </ItemList>
