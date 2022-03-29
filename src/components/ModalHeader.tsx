@@ -6,12 +6,17 @@ import Download from '../icons/download';
 import Trash from '../icons/trash';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { deleteItem, showModal } from '../redux/itemReducer';
+import { deleteItem, downLoadItem, showModal } from '../redux/itemReducer';
 import { clearItems } from '../redux/detailReducer';
 
-const ModalHeader = ({selectedItem}: any) => {
+const ModalHeader = ({selectedItem, current, imageRef}: any, ) => {
   const isSelecting = useAppSelector(state => state.items.isSelecting)
   const dispatch = useAppDispatch()
+
+  const downloadFile = () => {
+    let file = imageRef.current.currentSrc
+    dispatch(downLoadItem(file))
+  };
 
   const closeModal = () => {
     if (isSelecting === true) {
@@ -39,7 +44,7 @@ const ModalHeader = ({selectedItem}: any) => {
       <BookmarkButton>
         <Bookmark />
       </BookmarkButton>
-      <DownloadButton>
+      <DownloadButton onClick={downloadFile}>
         <Download />
         <Text>Download</Text>
       </DownloadButton>

@@ -4,13 +4,16 @@ import Download from '../icons/download';
 import Trash from '../icons/trash';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { checkAll, uncheckedAll, deleteAll } from '../redux/itemReducer'
+import { checkAll, uncheckedAll, deleteAll, downloadAll } from '../redux/itemReducer'
 
 const ProjectInfo = () => {
   const dispatch = useAppDispatch()
   const data = useAppSelector(state => state.items.items)
   const checkItems = useAppSelector(state => state.items.checkedItems)
   const isAllChecked = useAppSelector(state => state.items.isAllChecked)
+
+  const downloadItems = useAppSelector(state => state.items.downLoadItem)
+  console.log(downloadItems)
   
   const checkAllItems = () => {
     dispatch(checkAll())
@@ -19,12 +22,17 @@ const ProjectInfo = () => {
     }
   }
 
+  const onDownloadAll = () => {
+    dispatch(downloadAll(Object.keys(checkItems).map(Number)))
+  }
+
   const unCheckAll = () => {
     dispatch(uncheckedAll())
   }
 
   const onDeleteAll = () => {
-    dispatch(deleteAll(Object.keys(checkItems)))
+    dispatch(deleteAll(Object.keys(checkItems).map(Number)))
+    unCheckAll();
   }
 
   return (
@@ -46,7 +54,7 @@ const ProjectInfo = () => {
       <TopTitle>갤러리</TopTitle>
       {Object.keys(checkItems).length > 0 ? 
         <RightMenu>
-          <DownloadButton>
+          <DownloadButton onClick={onDownloadAll}>
             <Download />
           </DownloadButton>
           <TrashButton onClick={onDeleteAll}>
