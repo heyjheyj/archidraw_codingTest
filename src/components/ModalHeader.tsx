@@ -40,8 +40,6 @@ const ModalHeader = ({selectedItem, imageRef}: IProp) => {
     }
   }
 
-  console.log('ModalHeader selectedItem:', selectedItem)
-
   return (<TopBar>
     <CloseButton onClick={closeModal}>
       <CloseIcon /> 

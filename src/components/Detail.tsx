@@ -27,7 +27,6 @@ const Detail = () => {
   }
 
   useEffect(() => {
-    console.log('initItems')
     dispatch(initItems({items, selectedItem}))
   },[dispatch, items, selectedItem])
 

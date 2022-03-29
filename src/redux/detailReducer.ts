@@ -35,10 +35,6 @@ export const detailReducer = createSlice({
       const { items, selectedItem } = actions.payload;
       state.items = items;
       state.currentIndex = items.findIndex((item: IItem) => item.key === selectedItem.key)
-      console.log('currentIndex:', state.currentIndex);
-      console.log('selectedItem.key:', selectedItem.key);
-
-
       state.end = items.length;
       state.currentItem = selectedItem
       if(state.currentIndex === 0) {
