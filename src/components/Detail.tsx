@@ -1,15 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import styled from 'styled-components'
 import NextArrow from '../icons/nextArrow';
 import PrevArrow from '../icons/prevArrow';
 import ModalHeader from './ModalHeader';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
-import { getItems, prev, next } from '../redux/detailReducer';
+import { initItems, prev, next } from '../redux/detailReducer';
 import { State } from '../redux/itemReducer';
 
 const Detail = () => {
-  const [current, setCurrent] = useState<any>()
   const imageRef = useRef<HTMLImageElement>(null)
   const dispatch = useAppDispatch();
   
@@ -27,24 +26,15 @@ const Detail = () => {
     dispatch(next({selectedItem, currentIndex}))
   }
 
-  const getCurrentItem = () => {
-    let res = data.items.find((i:any) => i.key === currentIndex)
-    setCurrent(res)
-  }
-
   useEffect(() => {
-    getCurrentItem()
-  })
-
-  useEffect(() => {
-    dispatch(getItems({data, selectedItem}))
+    dispatch(initItems({data, selectedItem}))
   },[dispatch, data, selectedItem])
 
   return (
     <Modal>
-    <ModalHeader selectedItem={selectedItem} current={current} imageRef={imageRef}/>
+    <ModalHeader selectedItem={selectedItem} current={data.items[currentIndex]} imageRef={imageRef}/>
       <GalleryDetail>
-      {current && <Image ref={imageRef} src={`${current._id}`} alt="selectedImage"/>}
+      {data.items[currentIndex] && <Image ref={imageRef} src={`${data.items[currentIndex]._id}`} alt="selectedImage"/>}
       {!isStart && <PrevArrowButton onClick={movePrev}>
         <PrevArrow />
       </PrevArrowButton>}

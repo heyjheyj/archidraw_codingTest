@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useCallback} from 'react';
+import {useEffect, useRef, useCallback} from 'react';
 import styled from 'styled-components'
 
 import Header from '../components/Header';
@@ -15,9 +15,9 @@ const Gallery = () => {
   const data = useAppSelector(state => state.items)
   const isSelecting = useAppSelector(state => state.items.isSelecting)
 
-  const onSelectItem = (item: State) => {
+  const onSelectItem = (index: number) => {
     dispatch(showModal())
-    dispatch(selectItem(item))
+    dispatch(selectItem(index))
     dispatch(closeMenuAll())
   }
 
@@ -56,7 +56,8 @@ const Gallery = () => {
                   {data.items.map((item: State, index: number) => 
                     <ItemCard 
                       item={item} 
-                      selectItem={onSelectItem} 
+                      selectItem={onSelectItem}
+                      index={index}
                       key={index} 
                     />)}
                 </ItemList>

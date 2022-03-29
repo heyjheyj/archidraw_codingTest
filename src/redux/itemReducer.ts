@@ -14,7 +14,14 @@ export interface State {
   isShowMenu: boolean
 }
 
-const initialState = {
+const initialState: {
+  items: any;
+  isSelecting: any;
+  selectedItem: any;
+  checkedItems: any;
+  isAllChecked: any;
+  downLoadItem: any;
+} = {
   items: [],
   isSelecting: false,
   selectedItem: { _id: '', key: 0, checked: false, isShowMenu: false },
@@ -27,7 +34,7 @@ const manipulateData = () => {
   let result = test.renderings.map((item: any, index:number) => {
     return item = {
       "_id" : item["_id"],
-      "key" : index + 1,
+      "key" : index,
       "checked": false,
       "isShowMenu": false
     }
@@ -70,8 +77,8 @@ export const itemReducer = createSlice({
     showModal: (state) => {
       state.isSelecting = !state.isSelecting
     },
-    selectItem: (state: any, actions: PayloadAction<State>)=> {
-      state.selectedItem = actions.payload
+    selectItem: (state: any, actions: PayloadAction<number>)=> {
+      state.selectedItem = state.items[actions.payload]
     },
     checkItem: (state: any, actions: PayloadAction<State>) => {
       const item = actions.payload
@@ -96,8 +103,8 @@ export const itemReducer = createSlice({
     checkAll: (state: any) => {
       state.isAllChecked = true;
       state.items = state.items.map((i: State) => {
-        i.checked = true
-        return {...i}
+        i.checked = true;
+        return {...i};
       })
       state.items.forEach((item: State) => {
         state.checkedItems[item.key] = true
@@ -113,28 +120,25 @@ export const itemReducer = createSlice({
     },
     showMenu: (state: any, actions: PayloadAction<State>) => {
       const item = actions.payload;
-      state.items.map((i: State) => {
-        if (item.key === i.key){
-          i.isShowMenu = true
-        } else if (item.key !== i.key) {
-          i.isShowMenu = false
+      state.items.forEach((i: State) => {
+        if (item.key === i.key) {
+          i.isShowMenu = true;
+        } else {
+          i.isShowMenu = false;
         }
-        return i
       })
     },
     closeMenu: (state: any, actions: PayloadAction<State>) => {
       const item = actions.payload;
-      state.items.map((i: State) => {
-        if (item.key === i.key){
-          i.isShowMenu = false
+      state.items.forEach((i: State) => {
+        if (item.key === i.key) {
+          i.isShowMenu = false;
         }
-        return i
       })
     },
     closeMenuAll: (state: any) => {
-      state.items.map((i: State) => {
+      state.items.forEach((i: State) => {
         i.isShowMenu = false
-        return i
       })
     },
     deleteItem: (state: any, actions: PayloadAction<State>) => {
