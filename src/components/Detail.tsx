@@ -6,35 +6,36 @@ import ModalHeader from './ModalHeader';
 
 import { useAppSelector, useAppDispatch } from '../redux/hooks'
 import { initItems, prev, next } from '../redux/detailReducer';
-import { State } from '../redux/itemReducer';
+import { IItem } from '../redux/itemReducer';
 
 const Detail = () => {
   const imageRef = useRef<HTMLImageElement>(null)
   const dispatch = useAppDispatch();
   
-  const data = useAppSelector(state => state.items)
+  const items = useAppSelector(state => state.items.items)
   const currentIndex = useAppSelector(state => state.detail.currentIndex)
-  const selectedItem = useAppSelector<State>(state => state.items.selectedItem)
+  const selectedItem = useAppSelector<IItem>(state => state.items.selectedItem)
   const isEnd = useAppSelector(state => state.detail.isEnd)
   const isStart = useAppSelector(state => state.detail.isStart)
 
+
   const movePrev = () => {
-    dispatch(prev({selectedItem, currentIndex}))
+    dispatch(prev())
   }
 
   const moveNext = () => {
-    dispatch(next({selectedItem, currentIndex}))
+    dispatch(next())
   }
 
   useEffect(() => {
-    dispatch(initItems({data, selectedItem}))
-  },[dispatch, data, selectedItem])
+    dispatch(initItems({items, selectedItem}))
+  },[dispatch, items, selectedItem])
 
   return (
     <Modal>
-    <ModalHeader selectedItem={selectedItem} current={data.items[currentIndex]} imageRef={imageRef}/>
+    <ModalHeader selectedItem={selectedItem} imageRef={imageRef}/>
       <GalleryDetail>
-      {data.items[currentIndex] && <Image ref={imageRef} src={`${data.items[currentIndex]._id}`} alt="selectedImage"/>}
+      {items[currentIndex] && <Image ref={imageRef} src={`${items[currentIndex]._id}`} alt="selectedImage"/>}
       {!isStart && <PrevArrowButton onClick={movePrev}>
         <PrevArrow />
       </PrevArrowButton>}

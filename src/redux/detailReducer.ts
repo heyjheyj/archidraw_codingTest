@@ -1,10 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './store'
+import { IItem } from './itemReducer';
 
-const initialState = {
+interface IDetailState {
+  items: IItem[];
+  currentIndex: number,
+  currentItem: IItem,
+  start: number,
+  end: number,
+  isEnd: boolean,
+  isStart: boolean
+}
+
+interface IInitItem {
+  items: IItem[];
+  selectedItem: IItem;
+}
+
+const initialState: IDetailState = {
   items: [],
   currentIndex: 1,
-  currentItem: {},
+  currentItem: { _id: '', key: 0, checked: false, isShowMenu: false },
   start: 1,
   end: 0,
   isEnd: false,
@@ -15,20 +31,19 @@ export const detailReducer = createSlice({
   name: 'items',
   initialState,
   reducers: {
-    initItems : (state, actions: PayloadAction<any>) => {
-      // initialState - items에 값 셋팅, currentIndex셋팅, end값 셋팅
-      const { data, selectedItem } = actions.payload;
-      state.items = data.items;
-      state.currentIndex = data.items.findIndex((item: any) => item.key === selectedItem.key)
-      state.end = data.items.length;
+    initItems : (state: IDetailState, actions: PayloadAction<IInitItem>) => {
+      const { items, selectedItem } = actions.payload;
+      state.items = items;
+      state.currentIndex = items.findIndex((item: IItem) => item.key === selectedItem.key)
+      state.end = items.length;
       state.currentItem = selectedItem
       if(state.currentIndex === 0) {
         state.isStart = true
-      } else if (state.currentIndex === data.items.length-1) {
+      } else if (state.currentIndex === items.length-1) {
         state.isEnd = true
       }
     },
-    prev: (state, actions: PayloadAction<any>) => {
+    prev: (state: IDetailState) => {
       if (state.currentIndex === 1) {
         state.isStart = true
       } else if (state.isEnd) {
@@ -36,7 +51,7 @@ export const detailReducer = createSlice({
       }
       state.currentIndex -= 1
     },
-    next: (state, actions: PayloadAction<object>) => {
+    next: (state: IDetailState) => {
       if (state.isStart) {
         state.isStart = false;
       } else if (state.currentIndex === state.items.length-2) {
@@ -45,7 +60,7 @@ export const detailReducer = createSlice({
 
       state.currentIndex += 1
     },
-    clearItems: (state) => {
+    clearItems: (state: IDetailState) => {
       state.items = []
       state.currentIndex = 1
       state.end = 0

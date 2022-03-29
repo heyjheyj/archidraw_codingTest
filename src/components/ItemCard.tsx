@@ -2,11 +2,11 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import EllipsisIcon from '../icons/ellipsis'
 
-import { State, checkItem, uncheckItem, showMenu, closeMenu, deleteItem, downLoadItem, closeMenuAll } from '../redux/itemReducer'
+import { IItem, checkItem, uncheckItem, showMenu, closeMenu, deleteItem, downLoadItem, closeMenuAll } from '../redux/itemReducer'
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 
 interface IProps {
-  item: State,
+  item: IItem,
   selectItem: (index: number) => void,
   index: number,
 }

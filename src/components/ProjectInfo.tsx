@@ -27,8 +27,14 @@ const ProjectInfo = () => {
   }
 
   const onDeleteAll = () => {
-    dispatch(deleteAll(Object.keys(checkItems).map(Number)))
-    unCheckAll();
+    let message = "정말 삭제하시겠습니까?";
+    let result = window.confirm(message);
+    if (result) {
+      dispatch(deleteAll(Object.keys(checkItems).map(Number)))
+      unCheckAll();
+    } else {
+      return;
+    }
   }
 
   return (
