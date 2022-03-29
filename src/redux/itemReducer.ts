@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from './store'
+import { saveAs } from 'file-saver'
+import JsZip from 'jszip'
+import { Promise } from 'bluebird'
+import JSZipUtils from '../service/jsziputils';
 
 import test from '../data/test.json'
 
@@ -10,16 +14,13 @@ export interface State {
   isShowMenu: boolean
 }
 
-interface Parameter {
-  [key:number] : string | number
-}
-
 const initialState = {
   items: [],
   isSelecting: false,
   selectedItem: { _id: '', key: 0, checked: false, isShowMenu: false },
   checkedItems: {},
   isAllChecked: false,
+  downLoadItem: [],
 }
 
 const manipulateData = () => {
@@ -32,6 +33,30 @@ const manipulateData = () => {
     }
   })
   return result;
+}
+
+function urlToPromise(url: string) {
+  return new Promise(function(resolve, reject) {
+      JSZipUtils.getBinaryContent(url, function (err: any, data: any) {
+          if(err) {
+              reject(err);
+          } else {
+              resolve(data);
+          }
+      });
+  });
+}
+
+const exportZip = (urls: any) => {
+  const zip = JsZip();
+  urls.forEach(function(url:string, index:number){
+    var filename = "galleryImage" + index + ".png";
+    zip.file(filename, urlToPromise(url), {binary:true});
+  });
+  zip.generateAsync({type:'blob'}).then(function(content) {
+    const fileName = `images.zip`;
+    saveAs(content, fileName);
+  });
 }
 
 export const itemReducer = createSlice({
@@ -118,40 +143,41 @@ export const itemReducer = createSlice({
         return i.key !== item.key
       })
     },
-    deleteAll: (state: any, actions: PayloadAction<Parameter>) => {
-      const item = actions.payload;
-      let newArr:any = []
-      console.log(item)
-      // for (let key in item) {
-      //   console.log(item[key])
-
-        state.items.forEach((i: State) => {
-          for (let key in item) {
-            if(i.key !== item[key]) {
-              newArr.push(i)
-            }
-          }
-        })
-
-        console.log(newArr)
-      state.items = newArr;
-
-      // for (let i = 0; i < state.items.length; i++) {
-      //   Object.values(item).find(key => {
-      //     if (key !== state.items[i].key) {
-      //       newArr.push(state.items[i])
-      //     }
-      //   })
-      // }
-      // state.items = newArr
+    deleteAll: (state: any, actions: PayloadAction<object>) => {
+      const items = Object.values(actions.payload)
+      state.items = state.items.filter((i: State) => !items.includes(i.key))
     },
-    downLoadItem: (state, actions: PayloadAction<object>) => {
-      console.log('download')
+    downLoadItem: (state, actions: PayloadAction<string>) => {
+      const url = actions.payload;
+      saveAs(url, 'image.png')
+    },
+    downloadAll: (state: any, actions: PayloadAction<object>) => {
+      const selectedItem = Object.values(actions.payload)
+      state.downLoadItem = state.items.filter((i: State) => selectedItem.includes(i.key))
+      let urls = state.downLoadItem.map((i: State) => {return i._id})
+      console.log(urls)
+      let res = exportZip(urls)
+      console.log(res)
     }
   },
 })
 
-export const { manipulate, selectItem, checkItem, deleteItem, downLoadItem, showModal, checkAll, uncheckedAll, uncheckItem, showMenu, closeMenu, closeMenuAll, deleteAll } = itemReducer.actions
+export const { 
+  manipulate, 
+  selectItem, 
+  checkItem, 
+  deleteItem, 
+  downLoadItem, 
+  showModal, 
+  checkAll, 
+  uncheckedAll, 
+  uncheckItem, 
+  showMenu, 
+  closeMenu, 
+  closeMenuAll, 
+  deleteAll, 
+  downloadAll 
+} = itemReducer.actions
 
 export const selected = (state: RootState) => state
 
