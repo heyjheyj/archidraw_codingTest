@@ -33,7 +33,6 @@ export const detailReducer = createSlice({
       // 제일 앞으로 이동하면 버튼이 사라짐
       const {selectedItem, currentIndex} = actions.payload
       console.log(selectedItem, currentIndex)
-
       // 아이템length
       // 삭제
 

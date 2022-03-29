@@ -12,6 +12,7 @@ const Detail = () => {
   const [current, setCurrent] = useState<any>()
   const imageRef = useRef<HTMLImageElement>(null)
   const dispatch = useAppDispatch();
+  
   const data = useAppSelector(state => state.items)
   const currentIndex = useAppSelector(state => state.detail.currentIndex)
   const selectedItem = useAppSelector<State>(state => state.items.selectedItem)
