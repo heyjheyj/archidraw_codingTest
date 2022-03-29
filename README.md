@@ -30,6 +30,15 @@
 
 갤러리 페이지, 디테일 페이지 구현
 
-### 1. 시작화면
+### 1. 선택
+![checked](https://user-images.githubusercontent.com/90097736/160626967-f7fffd6d-bbb1-48c9-8118-ba278ef6b403.gif)
 
-### 2.
+### 2. 삭제
+![delete](https://user-images.githubusercontent.com/90097736/160627118-a801e11e-8f87-4d8d-965b-3e1760b0d6a3.gif)
+
+### 3. 다운로드
+![download](https://user-images.githubusercontent.com/90097736/160627190-3a3b50ae-f1c5-4552-9547-080b47747d9c.gif)
+
+### 4. 이미지 슬라이드
+![slide](https://user-images.githubusercontent.com/90097736/160627595-a056845a-4ace-4685-8008-4bb36247c5c0.gif)
+
